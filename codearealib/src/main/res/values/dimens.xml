@@ -1,0 +1,10 @@
+<resources>
+  <dimen name="underline_stroke_width">2.0dip</dimen>
+  <dimen name="underline_width">35.0dip</dimen>
+  <dimen name="section_reduction">5.0dip</dimen>
+  <dimen name="text_size">15.0dip</dimen>
+  <dimen name="hint_size">15.0dip</dimen>
+  <dimen name="hint_small_size">12.0dip</dimen>
+  <dimen name="text_margin_bottom">15dp</dimen>
+  <dimen name="hint_margin_bottom">25dp</dimen>
+</resources>
