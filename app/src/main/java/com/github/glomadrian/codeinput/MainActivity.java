@@ -1,4 +1,4 @@
-package com.github.glomadrian.codearea;
+package com.github.glomadrian.codeinput;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
