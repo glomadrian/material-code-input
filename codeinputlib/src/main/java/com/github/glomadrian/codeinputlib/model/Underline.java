@@ -1,19 +1,19 @@
-package com.github.glomadrian.codearealib;
+package com.github.glomadrian.codeinputlib.model;
 
 /**
  * @author Adrián García Lomas
  */
-public class SectionPath {
+public class Underline {
 
   float fromX;
   float fromY;
   float toX;
   float toY;
 
-  public SectionPath() {
+  public Underline() {
   }
 
-  public SectionPath(float fromX, float fromY, float toX, float toY) {
+  public Underline(float fromX, float fromY, float toX, float toY) {
     this.fromX = fromX;
     this.fromY = fromY;
     this.toX = toX;

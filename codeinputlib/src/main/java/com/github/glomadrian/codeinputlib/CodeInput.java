@@ -2,7 +2,7 @@
 // Jad home page: http://www.geocities.com/kpdus/jad.html
 // Decompiler options: braces fieldsfirst space lnc
 
-package com.github.glomadrian.codearealib;
+package com.github.glomadrian.codeinputlib;
 
 import android.animation.ValueAnimator;
 import android.content.Context;
@@ -16,15 +16,17 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.inputmethod.InputMethodManager;
+import com.github.glomadrian.codeinputlib.data.FixedStack;
+import com.github.glomadrian.codeinputlib.model.Underline;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class CodeArea extends View {
+public class CodeInput extends View {
 
   private static final int DEFAULT_CODES = 6;
   private static final Pattern KEYCODE_PATTERN = Pattern.compile("KEYCODE_(\\w)");
   private FixedStack characters;
-  private SectionPath underlines[];
+  private Underline underlines[];
   private Paint underlinePaint;
   private Paint underlineSelectedPaint;
   private Paint textPaint;
@@ -54,17 +56,17 @@ public class CodeArea extends View {
   private boolean underlined = true;
   private String hintText;
 
-  public CodeArea(Context context) {
+  public CodeInput(Context context) {
     super(context);
     init(null);
   }
 
-  public CodeArea(Context context, AttributeSet attributeset) {
+  public CodeInput(Context context, AttributeSet attributeset) {
     super(context, attributeset);
     init(attributeset);
   }
 
-  public CodeArea(Context context, AttributeSet attributeset, int defStyledAttrs) {
+  public CodeInput(Context context, AttributeSet attributeset, int defStyledAttrs) {
     super(context, attributeset, defStyledAttrs);
     init(attributeset);
   }
@@ -113,7 +115,7 @@ public class CodeArea extends View {
   }
 
   private void initDataStructures() {
-    underlines = new SectionPath[underlineAmount];
+    underlines = new Underline[underlineAmount];
     characters = new FixedStack();
     characters.setMaxSize(underlineAmount);
   }
@@ -184,15 +186,15 @@ public class CodeArea extends View {
     }
   }
 
-  private SectionPath createPath(int position, float sectionWidth) {
+  private Underline createPath(int position, float sectionWidth) {
     float fromX = sectionWidth * (float) position;
-    return new SectionPath(fromX, height, fromX + sectionWidth, height);
+    return new Underline(fromX, height, fromX + sectionWidth, height);
   }
 
   private void showKeyboard() {
     InputMethodManager inputmethodmanager =
         (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-    inputmethodmanager.toggleSoftInput(1, 0);
+    inputmethodmanager.showSoftInput(this, InputMethodManager.RESULT_UNCHANGED_SHOWN);
     inputmethodmanager.viewClicked(this);
   }
 
@@ -252,11 +254,11 @@ public class CodeArea extends View {
 
   @Override protected void onDraw(Canvas canvas) {
     for (int i = 0; i < underlines.length; i++) {
-      SectionPath sectionpath = underlines[i];
-      float fromX = sectionpath.fromX + reduction;
-      float fromY = sectionpath.fromY;
-      float toX = sectionpath.toX - reduction;
-      float toY = sectionpath.toY;
+      Underline sectionpath = underlines[i];
+      float fromX = sectionpath.getFromX() + reduction;
+      float fromY = sectionpath.getFromY();
+      float toX = sectionpath.getToX() - reduction;
+      float toY = sectionpath.getToY();
       drawSection(i, fromX, fromY, toX, toY, canvas);
       if (characters.toArray().length > i && characters.size() != 0) {
         drawCharacter(fromX, toX, (Character) characters.get(i), canvas);
