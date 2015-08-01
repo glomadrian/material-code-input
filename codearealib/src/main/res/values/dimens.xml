@@ -7,4 +7,5 @@
   <dimen name="hint_small_size">12.0dip</dimen>
   <dimen name="text_margin_bottom">15dp</dimen>
   <dimen name="hint_margin_bottom">25dp</dimen>
+  <dimen name="view_height">50dp</dimen>
 </resources>

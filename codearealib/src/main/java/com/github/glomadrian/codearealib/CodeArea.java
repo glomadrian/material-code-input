@@ -6,6 +6,7 @@ package com.github.glomadrian.codearealib;
 
 import android.animation.ValueAnimator;
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
@@ -23,7 +24,7 @@ public class CodeArea extends View {
   private static final int DEFAULT_CODES = 6;
   private static final Pattern KEYCODE_PATTERN = Pattern.compile("KEYCODE_(\\w)");
   private FixedStack characters;
-  private SectionPath sections[];
+  private SectionPath underlines[];
   private Paint underlinePaint;
   private Paint underlineSelectedPaint;
   private Paint textPaint;
@@ -31,9 +32,9 @@ public class CodeArea extends View {
   private ValueAnimator reductionAnimator;
   private ValueAnimator hintYAnimator;
   private ValueAnimator hintSizeAnimator;
-  private float sectionReduction;
-  private float sectionStrokeWidth;
-  private float sectionWidth;
+  private float underlineReduction;
+  private float underlineStrokeWidth;
+  private float underlineWidth;
   private float reduction;
   private float textSize;
   private float textMarginBottom;
@@ -42,10 +43,14 @@ public class CodeArea extends View {
   private float hintSmallSize;
   private float hintMarginBottom;
   private float hintActualMarginBottom;
+  private float viewHeight;
   private long animationDuration;
   private int height;
-  private int sectionsAmount;
+  private int underlineAmount;
   private int underlineColor;
+  private int underlineSelectedColor;
+  private int hintColor;
+  private int textColor;
   private boolean underlined = true;
   private String hintText;
 
@@ -64,51 +69,70 @@ public class CodeArea extends View {
     init(attributeset);
   }
 
-  private SectionPath createPath(int position, float sectionWidth) {
-    float fromX = sectionWidth * (float) position;
-    return new SectionPath(fromX, height, fromX + sectionWidth, height);
-  }
-
   private void init(AttributeSet attributeset) {
-    initAttributes(attributeset);
+    initDefaultAttributes();
+    initCustomAttributes(attributeset);
+    initDataStructures();
     initPaint();
     initAnimator();
     initViewOptions();
   }
 
-  private void initAttributes(AttributeSet attributeset) {
-    sections = new SectionPath[sectionsAmount];
-    characters = new FixedStack();
-    characters.setMaxSize(sectionsAmount);
-    sectionStrokeWidth = getContext().getResources().getDimension(R.dimen.underline_stroke_width);
-    sectionWidth = getContext().getResources().getDimension(R.dimen.underline_width);
-    sectionReduction = getContext().getResources().getDimension(R.dimen.section_reduction);
+  private void initDefaultAttributes() {
+    underlineStrokeWidth = getContext().getResources().getDimension(R.dimen.underline_stroke_width);
+    underlineWidth = getContext().getResources().getDimension(R.dimen.underline_width);
+    underlineReduction = getContext().getResources().getDimension(R.dimen.section_reduction);
     textSize = getContext().getResources().getDimension(R.dimen.text_size);
     textMarginBottom = getContext().getResources().getDimension(R.dimen.text_margin_bottom);
     underlineColor = getContext().getResources().getColor(R.color.underline_default_color);
+    underlineSelectedColor = getContext().getResources().getColor(R.color.underline_selected_color);
+    hintColor = getContext().getResources().getColor(R.color.hintColor);
+    textColor = getContext().getResources().getColor(R.color.textColor);
     hintMarginBottom = getContext().getResources().getDimension(R.dimen.hint_margin_bottom);
     hintNormalSize = getContext().getResources().getDimension(R.dimen.hint_size);
     hintSmallSize = getContext().getResources().getDimension(R.dimen.hint_small_size);
     animationDuration = getContext().getResources().getInteger(R.integer.animation_duration);
-    hintText = " ";
+    viewHeight = getContext().getResources().getDimension(R.dimen.view_height);
     hintX = 0;
     hintActualMarginBottom = 0;
-    sectionsAmount = DEFAULT_CODES;
+    underlineAmount = DEFAULT_CODES;
     reduction = 0.0F;
+  }
+
+  private void initCustomAttributes(AttributeSet attributeset) {
+    TypedArray attributes =
+        getContext().obtainStyledAttributes(attributeset, R.styleable.core_area);
+
+    underlineColor = attributes.getColor(R.styleable.core_area_underline_color, underlineColor);
+    underlineSelectedColor =
+        attributes.getColor(R.styleable.core_area_underline_selected_color, underlineSelectedColor);
+    hintColor = attributes.getColor(R.styleable.core_area_underline_color, hintColor);
+    hintText = attributes.getString(R.styleable.core_area_hint_text);
+    underlineAmount = attributes.getInt(R.styleable.core_area_codes, underlineAmount);
+    textColor = attributes.getInt(R.styleable.core_area_text_color, textColor);
+  }
+
+  private void initDataStructures() {
+    underlines = new SectionPath[underlineAmount];
+    characters = new FixedStack();
+    characters.setMaxSize(underlineAmount);
   }
 
   private void initPaint() {
     underlinePaint = new Paint();
     underlinePaint.setColor(underlineColor);
-    underlinePaint.setStrokeWidth(sectionStrokeWidth);
+    underlinePaint.setStrokeWidth(underlineStrokeWidth);
     underlinePaint.setStyle(android.graphics.Paint.Style.STROKE);
     underlineSelectedPaint = new Paint();
-    underlineSelectedPaint.setStrokeWidth(sectionStrokeWidth);
+    underlineSelectedPaint.setColor(underlineSelectedColor);
+    underlineSelectedPaint.setStrokeWidth(underlineStrokeWidth);
     underlineSelectedPaint.setStyle(android.graphics.Paint.Style.STROKE);
     textPaint = new Paint();
     textPaint.setTextSize(textSize);
+    textPaint.setColor(textColor);
     textPaint.setAntiAlias(true);
     textPaint.setTextAlign(Paint.Align.CENTER);
+    hintPaint = new Paint();
     hintPaint = new Paint();
     hintPaint.setTextSize(hintNormalSize);
     hintPaint.setAntiAlias(true);
@@ -116,7 +140,7 @@ public class CodeArea extends View {
   }
 
   private void initAnimator() {
-    reductionAnimator = ValueAnimator.ofFloat(0, sectionReduction);
+    reductionAnimator = ValueAnimator.ofFloat(0, underlineReduction);
     reductionAnimator.setDuration(animationDuration);
     reductionAnimator.addUpdateListener(new ReductionAnimatorListener());
     reductionAnimator.setInterpolator(new AccelerateDecelerateInterpolator());
@@ -144,15 +168,25 @@ public class CodeArea extends View {
   }
 
   @Override protected void onSizeChanged(int w, int h, int oldw, int oldh) {
-    super.onSizeChanged(w, h, oldw, oldh);
+    super.onSizeChanged(w, (int) viewHeight, oldw, oldh);
     height = h;
-    initPaths();
+    initUnderline();
   }
 
-  private void initPaths() {
-    for (int i = 0; i < sectionsAmount; i++) {
-      sections[i] = createPath(i, sectionWidth);
+  @Override protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+    super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+    setMeasuredDimension(getMeasuredWidth(), (int) viewHeight);
+  }
+
+  private void initUnderline() {
+    for (int i = 0; i < underlineAmount; i++) {
+      underlines[i] = createPath(i, underlineWidth);
     }
+  }
+
+  private SectionPath createPath(int position, float sectionWidth) {
+    float fromX = sectionWidth * (float) position;
+    return new SectionPath(fromX, height, fromX + sectionWidth, height);
   }
 
   private void showKeyboard() {
@@ -166,6 +200,7 @@ public class CodeArea extends View {
     reductionAnimator.start();
     hintSizeAnimator.start();
     hintYAnimator.start();
+    underlined = false;
   }
 
   private void reverseAnimation() {
@@ -175,13 +210,19 @@ public class CodeArea extends View {
     underlined = true;
   }
 
+  /**
+   * Detects the del key and delete the numbers
+   */
   @Override public boolean onKeyDown(int keyCode, KeyEvent keyevent) {
-    if (keyCode == 67 && characters.size() != 0) {
+    if (keyCode == KeyEvent.KEYCODE_DEL && characters.size() != 0) {
       characters.pop();
     }
     return super.onKeyDown(keyCode, keyevent);
   }
 
+  /**
+   * Capture the keyboard events but only if are A-Z 0-9
+   */
   @Override public boolean onKeyUp(int keyCode, KeyEvent keyevent) {
     String text = KeyEvent.keyCodeToString(keyCode);
     Matcher matcher = KEYCODE_PATTERN.matcher(text);
@@ -194,12 +235,14 @@ public class CodeArea extends View {
     }
   }
 
+  /**
+   * When a touch is detected the view need to focus and animate if is necessary
+   */
   @Override public boolean onTouchEvent(MotionEvent motionevent) {
     if (motionevent.getAction() == 0) {
       requestFocus();
       if (underlined) {
         startAnimation();
-        underlined = false;
       }
 
       showKeyboard();
@@ -208,8 +251,8 @@ public class CodeArea extends View {
   }
 
   @Override protected void onDraw(Canvas canvas) {
-    for (int i = 0; i < sections.length; i++) {
-      SectionPath sectionpath = sections[i];
+    for (int i = 0; i < underlines.length; i++) {
+      SectionPath sectionpath = underlines[i];
       float fromX = sectionpath.fromX + reduction;
       float fromY = sectionpath.fromY;
       float toX = sectionpath.toX - reduction;
@@ -219,7 +262,9 @@ public class CodeArea extends View {
         drawCharacter(fromX, toX, (Character) characters.get(i), canvas);
       }
     }
-    drawHint(canvas);
+    if (hintText != null) {
+      drawHint(canvas);
+    }
     invalidate();
   }
 
@@ -244,7 +289,7 @@ public class CodeArea extends View {
   }
 
   /**
-   * Custom animator listener
+   * Listener to update the reduction of the underline bars
    */
   private class ReductionAnimatorListener implements ValueAnimator.AnimatorUpdateListener {
 
@@ -254,6 +299,9 @@ public class CodeArea extends View {
     }
   }
 
+  /**
+   * Listener to update the hint y values
+   */
   private class HintYAnimatorListener implements ValueAnimator.AnimatorUpdateListener {
 
     @Override public void onAnimationUpdate(ValueAnimator animation) {
@@ -261,6 +309,9 @@ public class CodeArea extends View {
     }
   }
 
+  /**
+   * Listener to update the size of the hint text
+   */
   private class HintSizeAnimatorListener implements ValueAnimator.AnimatorUpdateListener {
 
     @Override public void onAnimationUpdate(ValueAnimator animation) {

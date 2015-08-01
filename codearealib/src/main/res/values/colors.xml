@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
   <color name="underline_default_color">#CCCCCC</color>
+  <color name="underline_selected_color">#000</color>
+  <color name="hintColor">#CCCCCC</color>
+  <color name="textColor">#000</color>
 </resources>
