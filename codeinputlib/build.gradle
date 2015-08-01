@@ -1,0 +1,53 @@
+group = 'com.github.glomadrian' // Maven Group ID for the artifact
+version = '1.0'
+
+apply plugin: 'com.android.library'
+//apply plugin: 'com.github.dcendents.android-maven'
+apply plugin: 'com.jfrog.bintray'
+
+android {
+  compileSdkVersion 22
+  buildToolsVersion "22.0.1"
+
+  defaultConfig {
+    minSdkVersion 11
+    targetSdkVersion 22
+    versionCode 1
+    versionName "1.0"
+    archivesBaseName = "CodeInput"
+
+  }
+  buildTypes {
+    release {
+      minifyEnabled false
+      proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+    }
+  }
+}
+
+
+def siteUrl = 'https://github.com/glomadrian/material-code-input'
+def gitUrl = 'https://github.com/glomadrian/material-code-input.git'
+
+bintray {
+  user = 'glomadrian'
+  key = '29035e21ea64dcbb3de5f5580bd9eb4034170e8e'
+
+  configurations = ['archives'] //When uploading configuration files
+  pkg {
+    repo = 'maven'
+    name = 'MaterialCodeInput'
+    desc = 'A material style input for put codess'
+    websiteUrl = siteUrl
+    issueTrackerUrl = 'https://github.com/glomadrian/material-code-input/issues'
+    vcsUrl = gitUrl
+    licenses = ['Apache-2.0']
+    labels = ['aar', 'android', 'material', 'code', 'input', 'field']
+    publicDownloadNumbers = true
+  }
+}
+
+dependencies {
+  compile fileTree(dir: 'libs', include: ['*.jar'])
+  compile 'com.android.support:appcompat-v7:22.2.0'
+}

@@ -1,4 +1,4 @@
-package com.github.glomadrian.codearealib;
+package com.github.glomadrian.codeinputlib.data;
 
 import java.util.Stack;
 
