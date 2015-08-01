@@ -4,7 +4,10 @@ Material Code input
 
 A material style input for put codes
 
-//TODO gif
+![Demo Screenshot][1]
+
+![Demo Screenshot][2]
+
 
 Based on
 ----------
@@ -93,5 +96,5 @@ License
     See the License for the specific language governing permissions and
     limitations under the License.
 
-[1]: ./art/swtich.gif
-[2]: ./art/all.png
+[1]: ./art/codeInput1.gif
+[2]: ./art/codeInput2.gif
