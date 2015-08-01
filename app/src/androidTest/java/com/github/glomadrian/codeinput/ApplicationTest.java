@@ -1,4 +1,4 @@
-package com.github.glomadrian.codearea;
+package com.github.glomadrian.codeinput;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;
