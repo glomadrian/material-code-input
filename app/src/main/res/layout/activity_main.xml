@@ -14,7 +14,7 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       app:hint_text="Pairing code"
-      android:id="@+id/view"
+      android:id="@+id/pairing"
       />
 
   <com.github.glomadrian.codeinputlib.CodeInput
@@ -52,6 +52,12 @@
       app:hint_text="Hash code"
       app:codes="10"
       />
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Show pairing code"
+        android:id="@+id/button"
+        />
 
 
 </LinearLayout>

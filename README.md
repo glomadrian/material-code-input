@@ -54,6 +54,11 @@ xmlns:app="http://schemas.android.com/apk/res-auto"
 
 ```
 
+Get the input code (Returns a Character[])
+
+```java
+  codeInput.getCode()
+```
 
 For Gradle
 ---------------------

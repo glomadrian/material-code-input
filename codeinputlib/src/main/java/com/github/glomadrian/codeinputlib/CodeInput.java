@@ -25,7 +25,7 @@ public class CodeInput extends View {
 
   private static final int DEFAULT_CODES = 6;
   private static final Pattern KEYCODE_PATTERN = Pattern.compile("KEYCODE_(\\w)");
-  private FixedStack characters;
+  private FixedStack<Character> characters;
   private Underline underlines[];
   private Paint underlinePaint;
   private Paint underlineSelectedPaint;
@@ -261,7 +261,7 @@ public class CodeInput extends View {
       float toY = sectionpath.getToY();
       drawSection(i, fromX, fromY, toX, toY, canvas);
       if (characters.toArray().length > i && characters.size() != 0) {
-        drawCharacter(fromX, toX, (Character) characters.get(i), canvas);
+        drawCharacter(fromX, toX, characters.get(i), canvas);
       }
     }
     if (hintText != null) {
@@ -288,6 +288,10 @@ public class CodeInput extends View {
 
   private void drawHint(Canvas canvas) {
     canvas.drawText(hintText, hintX, height - textMarginBottom - hintActualMarginBottom, hintPaint);
+  }
+
+  public Character[] getCode() {
+    return characters.toArray(new Character[underlineAmount]);
   }
 
   /**
