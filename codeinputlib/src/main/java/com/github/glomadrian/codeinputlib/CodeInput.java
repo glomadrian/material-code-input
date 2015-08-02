@@ -17,6 +17,9 @@ import com.github.glomadrian.codeinputlib.model.Underline;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * @author Adrián García Lomas
+ */
 public class CodeInput extends View {
 
   private static final int DEFAULT_CODES = 6;
