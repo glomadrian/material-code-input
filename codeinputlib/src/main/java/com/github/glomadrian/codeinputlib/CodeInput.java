@@ -300,8 +300,8 @@ public class CodeInput extends View {
   private class ReductionAnimatorListener implements ValueAnimator.AnimatorUpdateListener {
 
     public void onAnimationUpdate(ValueAnimator valueanimator) {
-      float f = ((Float) valueanimator.getAnimatedValue()).floatValue();
-      reduction = f;
+      float value = ((Float) valueanimator.getAnimatedValue()).floatValue();
+      reduction = value;
     }
   }
 
