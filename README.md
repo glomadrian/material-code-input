@@ -1,6 +1,7 @@
 Material Code input
 -----------------
 [![Download](https://api.bintray.com/packages/glomadrian/maven/MaterialCodeInput/images/download.svg) ](https://bintray.com/glomadrian/maven/MaterialCodeInput/_latestVersion)
+[![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-Material%20Code%20Input-brightgreen.svg?style=flat)](http://android-arsenal.com/details/1/2221)
 
 A material style input for put codes
 
