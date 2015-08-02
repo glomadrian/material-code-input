@@ -74,7 +74,7 @@ repositories {
 ```
 Add dependency
 ```java
-  compile 'com.github.glomadrian:CodeInput:1.0@aar'
+  compile 'com.github.glomadrian:CodeInput:1.1@aar'
 ```
 
 
