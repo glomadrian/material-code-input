@@ -1,7 +1,3 @@
-// Decompiled by Jad v1.5.8e. Copyright 2001 Pavel Kouznetsov.
-// Jad home page: http://www.geocities.com/kpdus/jad.html
-// Decompiler options: braces fieldsfirst space lnc
-
 package com.github.glomadrian.codeinputlib;
 
 import android.animation.ValueAnimator;
@@ -21,6 +17,9 @@ import com.github.glomadrian.codeinputlib.model.Underline;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * @author Adrián García Lomas
+ */
 public class CodeInput extends View {
 
   private static final int DEFAULT_CODES = 6;
