@@ -61,6 +61,20 @@ Get the input code (Returns a Character[])
   codeInput.getCode()
 ```
 
+You can use the `onCodeReadyListener` which is called when all the characters are entered.
+
+```java
+  CodeInput cInput = (CodeInput) findViewById(R.id.pairing);
+    cInput.setCodeReadyListener(new CodeInput.codeReadyListener() {
+      @Override
+      public void onCodeReady(Character[] code) {
+        // Code has been entered ....
+        Toast.makeText(MainActivity.this,"code entered is : "+ Arrays.toString(code),Toast.LENGTH_SHORT).show();
+      }
+    });
+```
+
+
 For Gradle
 ---------------------
 
