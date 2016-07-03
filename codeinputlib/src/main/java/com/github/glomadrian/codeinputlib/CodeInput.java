@@ -55,19 +55,29 @@ public class CodeInput extends View {
   private boolean underlined = true;
   private String hintText;
 
+  private codeReadyListener listener;
+
   public CodeInput(Context context) {
     super(context);
     init(null);
+    this.listener = null;
   }
 
   public CodeInput(Context context, AttributeSet attributeset) {
     super(context, attributeset);
     init(attributeset);
+    this.listener = null;
   }
+
 
   public CodeInput(Context context, AttributeSet attributeset, int defStyledAttrs) {
     super(context, attributeset, defStyledAttrs);
     init(attributeset);
+    this.listener = null;
+  }
+
+  public void setCodeReadyListener(codeReadyListener listener) {
+    this.listener = listener;
   }
 
   private void init(AttributeSet attributeset) {
@@ -79,6 +89,12 @@ public class CodeInput extends View {
     initViewOptions();
   }
 
+  public interface codeReadyListener {
+    // These methods are the different events and
+    // need to pass relevant arguments related to the event triggered
+    public void onCodeReady(Character[] code );
+
+  }
   private void initDefaultAttributes() {
     underlineStrokeWidth = getContext().getResources().getDimension(R.dimen.underline_stroke_width);
     underlineWidth = getContext().getResources().getDimension(R.dimen.underline_width);
@@ -230,6 +246,11 @@ public class CodeInput extends View {
     if (matcher.matches()) {
       char character = matcher.group(1).charAt(0);
       characters.push(character);
+      if (characters.size() >=underlineAmount){
+        if(listener!=null) {
+          listener.onCodeReady(getCode());
+        }
+      }
       return true;
     } else {
       return false;
