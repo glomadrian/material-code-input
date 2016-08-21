@@ -1,6 +1,7 @@
 package com.github.glomadrian.codeinputlib;
 
 import android.animation.ValueAnimator;
+import android.app.Activity;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
@@ -12,6 +13,9 @@ import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
+import android.view.inputmethod.BaseInputConnection;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputConnection;
 import android.view.inputmethod.InputMethodManager;
 
 import com.github.glomadrian.codeinputlib.data.FixedStack;
@@ -58,6 +62,7 @@ public class CodeInput extends View {
     private int textColor;
     private boolean underlined = true;
     private String hintText;
+    private int mInputType;
 
     private codeReadyListener listener;
 
@@ -220,6 +225,33 @@ public class CodeInput extends View {
         inputmethodmanager.viewClicked(this);
     }
 
+    private void hideKeyBoard(){
+        InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Activity.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(getWindowToken(), InputMethodManager.RESULT_UNCHANGED_SHOWN);
+    }
+
+    /**
+     * Set Input type like InputType.TYPE_CLASS_PHONE, InputType.TYPE_CLASS_NUMBER
+     * Doesn't work for password
+     * @param inputType
+     */
+    public void setInputType(int inputType) {
+        mInputType = inputType;
+    }
+
+    @Override
+    public InputConnection onCreateInputConnection(EditorInfo outAttrs) {
+        outAttrs.actionLabel = null;
+        outAttrs.inputType = mInputType;
+        outAttrs.imeOptions = EditorInfo.IME_ACTION_DONE;
+        return new BaseInputConnection(this, true);
+    }
+
+    @Override
+    public boolean onCheckIsTextEditor() {
+        return true;
+    }
+
     private void startAnimation() {
         reductionAnimator.start();
         hintSizeAnimator.start();
@@ -278,6 +310,7 @@ public class CodeInput extends View {
                     inputText(String.valueOf(stringBuilder));
                 }
                 if (characters.isEmpty()) {
+                    hideKeyBoard();
                     reverseAnimation();
                 }
             }
