@@ -185,14 +185,14 @@ public class CodeInput extends View {
   }
 
   @Override protected void onSizeChanged(int w, int h, int oldw, int oldh) {
-    super.onSizeChanged(w, (int) viewHeight, oldw, oldh);
+    super.onSizeChanged((int) ((underlineWidth + underlineReduction) * DEFAULT_CODES), (int) viewHeight, oldw, oldh);
     height = h;
     initUnderline();
   }
 
   @Override protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
     super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-    setMeasuredDimension(getMeasuredWidth(), (int) viewHeight);
+    setMeasuredDimension((int) ((underlineWidth + underlineReduction) * DEFAULT_CODES), (int) viewHeight);
   }
 
   private void initUnderline() {
