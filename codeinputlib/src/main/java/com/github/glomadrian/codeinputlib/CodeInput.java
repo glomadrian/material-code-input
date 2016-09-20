@@ -137,6 +137,8 @@ public class CodeInput extends View {
         hintText = attributes.getString(R.styleable.core_area_hint_text);
         underlineAmount = attributes.getInt(R.styleable.core_area_codes, underlineAmount);
         textColor = attributes.getInt(R.styleable.core_area_text_color, textColor);
+        
+        attributes.recycle();
     }
 
     private void initDataStructures() {
